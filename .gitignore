@@ -1,0 +1,10 @@
+# package directories
+node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
+
+cloudant.json
+fetch-feed.sh
+ifttt-makerWebhook.json

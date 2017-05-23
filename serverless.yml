@@ -1,0 +1,77 @@
+service: feed-aggregator
+
+provider:
+  name: openwhisk
+  memory: 256
+  timeout: 10
+
+functions:
+  put:
+    handler: handler.put
+    parameters:
+      cloudant_username: ${self:resources.cloudantJson.username}
+      cloudant_password: ${self:resources.cloudantJson.password}
+      cloudant_db: feeds
+  delete:
+    handler: handler.delete
+    parameters:
+      cloudant_username: ${self:resources.cloudantJson.username}
+      cloudant_password: ${self:resources.cloudantJson.password}
+      cloudant_db: feeds
+  list:
+    handler: handler.list
+    parameters:
+      cloudant_username: ${self:resources.cloudantJson.username}
+      cloudant_password: ${self:resources.cloudantJson.password}
+      cloudant_db: feeds
+  crawlCron:
+    handler: handler.crawlCron
+    parameters:
+      cloudant_username: ${self:resources.cloudantJson.username}
+      cloudant_password: ${self:resources.cloudantJson.password}
+      cloudant_db: feeds
+      batch_size: 20
+    events:
+      - schedule: cron(17 * * * *)
+  crawl:
+    handler: crawl
+    runtime: nodejs:default
+    parameters:
+      cloudant_username: ${self:resources.cloudantJson.username}
+      cloudant_password: ${self:resources.cloudantJson.password}
+      cloudant_db: items
+  feed:
+    handler: feed
+    runtime: nodejs:default
+    annotations:
+      web-export: true
+    parameters:
+      cloudant_username: ${self:resources.cloudantJson.username}
+      cloudant_password: ${self:resources.cloudantJson.password}
+      cloudant_db: items
+  feedcleaner:
+    handler: handler.feedcleaner
+    parameters:
+      cloudant_username: ${self:resources.cloudantJson.username}
+      cloudant_password: ${self:resources.cloudantJson.password}
+      cloudant_db: items
+    events:
+      - schedule: cron(47 * * * *)
+  makerWebhook:
+    handler: ifttt.makerWebhook
+    parameters:
+      makerWebhook_key: ${self:resources.iftttMakerWebhookJson.key}
+    events:
+      - trigger: feed-aggregator_cloudant_items_change_trigger
+
+plugins:
+  - serverless-openwhisk
+
+resources:
+  cloudantJson: ${file(cloudant.json)}
+  iftttMakerWebhookJson: ${file(ifttt-makerWebhook.json)}
+  triggers:
+    feed-aggregator_cloudant_items_change_trigger:
+      feed: /_/${self:resources.cloudantJson.package_binding_name}/changes
+      feed_parameters:
+        dbname: items

@@ -1,0 +1,7 @@
+{
+  "name": "feed",
+  "main": "index.js",
+  "dependencies" : {
+    "rss" : "1.2.2"
+  }
+}
