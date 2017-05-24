@@ -1,5 +1,7 @@
 {
   "username": "",
   "password": "",
-  "package_binding_name": "feed-aggregation-cloudant"
+  "package_binding_name": "feed-aggregation-cloudant",
+  "db_feeds": "feeds",
+  "db_items": "items"
 }

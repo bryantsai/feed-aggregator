@@ -15,10 +15,6 @@ function makerWebhook(params) {
     return {payload: `ignored docs with non-url id=${id}`};
   }
 
-  if (dbname !== 'items') {
-    return {payload: `ignored non-items docs`};
-  }
-
   if (deleted) {
     return {payload: `ignored deleted docs`};
   }

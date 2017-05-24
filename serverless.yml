@@ -11,25 +11,25 @@ functions:
     parameters:
       cloudant_username: ${self:resources.cloudantJson.username}
       cloudant_password: ${self:resources.cloudantJson.password}
-      cloudant_db: feeds
+      cloudant_db: ${self:resources.cloudantJson.db_feeds}
   delete:
     handler: handler.delete
     parameters:
       cloudant_username: ${self:resources.cloudantJson.username}
       cloudant_password: ${self:resources.cloudantJson.password}
-      cloudant_db: feeds
+      cloudant_db: ${self:resources.cloudantJson.db_feeds}
   list:
     handler: handler.list
     parameters:
       cloudant_username: ${self:resources.cloudantJson.username}
       cloudant_password: ${self:resources.cloudantJson.password}
-      cloudant_db: feeds
+      cloudant_db: ${self:resources.cloudantJson.db_feeds}
   crawlCron:
     handler: handler.crawlCron
     parameters:
       cloudant_username: ${self:resources.cloudantJson.username}
       cloudant_password: ${self:resources.cloudantJson.password}
-      cloudant_db: feeds
+      cloudant_db: ${self:resources.cloudantJson.db_feeds}
       batch_size: 20
     events:
       - schedule: cron(17 * * * *)
@@ -39,7 +39,7 @@ functions:
     parameters:
       cloudant_username: ${self:resources.cloudantJson.username}
       cloudant_password: ${self:resources.cloudantJson.password}
-      cloudant_db: items
+      cloudant_db: ${self:resources.cloudantJson.db_items}
   feed:
     handler: feed
     runtime: nodejs:default
@@ -48,13 +48,13 @@ functions:
     parameters:
       cloudant_username: ${self:resources.cloudantJson.username}
       cloudant_password: ${self:resources.cloudantJson.password}
-      cloudant_db: items
+      cloudant_db: ${self:resources.cloudantJson.db_items}
   feedcleaner:
     handler: handler.feedcleaner
     parameters:
       cloudant_username: ${self:resources.cloudantJson.username}
       cloudant_password: ${self:resources.cloudantJson.password}
-      cloudant_db: items
+      cloudant_db: ${self:resources.cloudantJson.db_items}
     events:
       - schedule: cron(47 * * * *)
   makerWebhook:
@@ -74,4 +74,4 @@ resources:
     feed-aggregator_cloudant_items_change_trigger:
       feed: /_/${self:resources.cloudantJson.package_binding_name}/changes
       feed_parameters:
-        dbname: items
+        dbname: ${self:resources.cloudantJson.db_items}
